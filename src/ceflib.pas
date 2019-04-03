@@ -4450,7 +4450,7 @@ type
     // Seek to the specified offset position. |whence| may be any one of SEEK_CUR,
     // SEEK_END or SEEK_SET. Return zero on success and non-zero on failure.
     seek: function(self: PCefReadHandler; offset: Int64;
-      whence: Integer): Integer; stdcall;
+      whence: TSeekOrigin): Integer; stdcall;
 
     // Return the current offset position.
     tell: function(self: PCefReadHandler): Int64; stdcall;
@@ -6684,7 +6684,7 @@ type
   ICefCustomStreamReader = interface(ICefBase)
     ['{BBCFF23A-6FE7-4C28-B13E-6D2ACA5C83B7}']
     function Read(ptr: Pointer; size, n: NativeUInt): NativeUInt;
-    function Seek(offset: Int64; whence: Integer): Integer;
+    function Seek(offset: Int64; whence: TSeekOrigin): Integer;
     function Tell: Int64;
     function Eof: Boolean;
     function MayBlock: Boolean;
@@ -8373,7 +8373,7 @@ type
     FOwned: Boolean;
   protected
     function Read(ptr: Pointer; size, n: NativeUInt): NativeUInt; virtual;
-    function Seek(offset: Int64; whence: Integer): Integer; virtual;
+    function Seek(offset: Int64; whence: TSeekOrigin): Integer; virtual;
     function Tell: Int64; virtual;
     function Eof: Boolean; virtual;
     function MayBlock: Boolean; virtual;
@@ -12232,7 +12232,7 @@ begin
     Result := Read(ptr, size, n);
 end;
 
-function cef_stream_reader_seek(self: PCefReadHandler; offset: Int64; whence: Integer): Integer; stdcall;
+function cef_stream_reader_seek(self: PCefReadHandler; offset: Int64; whence: TSeekOrigin): Integer; stdcall;
 begin
   with TCefCustomStreamReader(CefGetObject(self)) do
     Result := Seek(offset, whence);
@@ -13379,7 +13379,7 @@ begin
   result := NativeUInt(FStream.Read(ptr^, n * size)) div size;
 end;
 
-function TCefCustomStreamReader.Seek(offset: Int64; whence: Integer): Integer;
+function TCefCustomStreamReader.Seek(offset: Int64; whence: TSeekOrigin): Integer;
 begin
   Result := FStream.Seek(offset, whence);
 end;
